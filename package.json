@@ -1,0 +1,27 @@
+{
+  "name": "cordova-plugin-map",
+  "version": "1.0.0",
+  "description": "",
+  "cordova": {
+    "id": "cordova-plugin-map",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohaniictemp/cordova-plugin-downloadmap.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rohaniictemp/cordova-plugin-downloadmap/issues"
+  },
+  "homepage": "https://github.com/rohaniictemp/cordova-plugin-downloadmap#readme"
+}
