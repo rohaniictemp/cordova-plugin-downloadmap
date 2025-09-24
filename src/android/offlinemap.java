@@ -37,7 +37,7 @@ public class offlinemap extends CordovaPlugin {
     private static final int MAX_ZOOM = 9;
 
 
-    public void initializeDownload( double[] rEQUEST_BBOX) {
+    public void initializeDownload( double[] rEQUEST_BBOX,CallbackContext callbackContext)  {
         
          for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
             int numTiles = 1 << zoom; // 2^zoom
@@ -67,8 +67,25 @@ public class offlinemap extends CordovaPlugin {
             for (int i = 0; i < bboxArray.length(); i++) {
                 rEQUEST_BBOX[i] = bboxArray.getDouble(i);
             }
-            this.initializeDownload(rEQUEST_BBOX);
-            return true;
+            cordova.getThreadPool().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            initializeDownload(rEQUEST_BBOX,callbackContext);
+
+                            // Notify JS success
+                            callbackContext.success("Download task started in background");
+                        } catch (Exception e) {
+                            callbackContext.error("Error starting download: " + e.getMessage());
+                        }
+
+                         callbackContext.success("Download finished");
+
+                    }
+
+
+                });         
+       return true;
         }
         return false;
     }
