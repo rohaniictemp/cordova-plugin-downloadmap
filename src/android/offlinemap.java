@@ -66,20 +66,21 @@ public class offlinemap extends CordovaPlugin {
             double[] rEQUEST_BBOX = new double[bboxArray.length()];
             for (int i = 0; i < bboxArray.length(); i++) {
                 rEQUEST_BBOX[i] = bboxArray.getDouble(i);
+                System.out.println(rEQUEST_BBOX.toString());
             }
             cordova.getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            initializeDownload(rEQUEST_BBOX,callbackContext);
 
+
+                            initializeDownload(rEQUEST_BBOX,callbackContext);
+                                                        callbackContext.success("Download task started in background");
                             // Notify JS success
-                            callbackContext.success("Download task started in background");
                         } catch (Exception e) {
                             callbackContext.error("Error starting download: " + e.getMessage());
                         }
 
-                         callbackContext.success("Download finished");
 
                     }
 
@@ -106,7 +107,7 @@ public class offlinemap extends CordovaPlugin {
     }
 
     private static void downloadTile(String wmsUrl, int zoom, int x, int y) {
-        File outputFile = new File(String.format("/storage/emulated/0/Android/data/com.iic.naavic/tiles/%d/%d/%d.png", zoom, x, y));
+        File outputFile = new File(String.format("/sdcard/Android/data/com.iic.naavic/tiles/%d/%d/%d.png", zoom, x, y));
         outputFile.getParentFile().mkdirs();
 
  
