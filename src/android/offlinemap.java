@@ -89,7 +89,7 @@ public class offlinemap extends CordovaPlugin {
     }
 
     private static void downloadTile(String wmsUrl, int zoom, int x, int y) {
-        File outputFile = new File(String.format("tiles/%d/%d/%d.png", zoom, x, y));
+        File outputFile = new File(String.format("/sdcard/Android/data/com.iic.naavic/tiles/%d/%d/%d.png", zoom, x, y));
         outputFile.getParentFile().mkdirs();
 
  
