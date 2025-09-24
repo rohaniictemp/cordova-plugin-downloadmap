@@ -89,9 +89,9 @@ public class offlinemap extends CordovaPlugin {
     }
 
     private static void downloadTile(String wmsUrl, int zoom, int x, int y) {
-        File dir = new File(context.getExternalFilesDir(null), "tiles/" + zoom + "/" + x);
-        if (!dir.exists()) dir.mkdirs();
-        File outputFile = new File(dir, y + ".png");
+        File outputFile = new File(String.format("tiles/%d/%d/%d.png", zoom, x, y));
+        outputFile.getParentFile().mkdirs();
+
  
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(wmsUrl).openConnection();
@@ -104,16 +104,11 @@ public class offlinemap extends CordovaPlugin {
                     Bitmap bitmap = BitmapFactory.decodeStream(in);
                     if (bitmap != null) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                        Log.i(TAG, "Tile downloaded: " + outputFile.getAbsolutePath());
-                    } else {
-                        Log.e(TAG, "Failed to decode image for tile: " + outputFile.getPath());
-                    }
+                    } 
                 }
             } else {
-                Log.e(TAG, "Failed to download tile (" + zoom + "/" + x + "/" + y + "). HTTP " + responseCode);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error downloading tile (" + zoom + "/" + x + "/" + y + "): " + e.getMessage());
         }
     }
 
