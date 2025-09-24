@@ -34,7 +34,7 @@ public class offlinemap extends CordovaPlugin {
     private static final String CRS = "EPSG:3857";
     private static final int TILE_SIZE = 256;
     private static final int MIN_ZOOM = 0;
-    private static final int MAX_ZOOM = 9;
+    private static final int MAX_ZOOM = 5;
 
 
     public void initializeDownload( double[] rEQUEST_BBOX,CallbackContext callbackContext)  {
