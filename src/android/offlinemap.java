@@ -20,6 +20,9 @@ import org.json.JSONObject;
  */
 public class offlinemap extends CordovaPlugin {
 
+    public offlinemap() {
+    }
+
     private static final String WMS_BASE_URL = "https://egisp.dfo-mpo.gc.ca/arcgis/rest/services/chs/ENC_MaritimeChartService/MapServer/exts/MaritimeChartService/WMSServer?";
     private static final String LAYER_NAME = "6,4,3,2,1"; // Example layer names
     private static final String CRS = "EPSG:3857";
@@ -53,7 +56,11 @@ public class offlinemap extends CordovaPlugin {
             this.coolMethod(message, callbackContext);
             return true;
         }else if(action.equals("initializeDownload")){
-            double[] rEQUEST_BBOX = args.getDoubleArray(0);
+            JSONArray bboxArray = args.getJSONArray(0);
+            double[] rEQUEST_BBOX = new double[bboxArray.length()];
+            for (int i = 0; i < bboxArray.length(); i++) {
+                rEQUEST_BBOX[i] = bboxArray.getDouble(i);
+            }
             this.initializeDownload(rEQUEST_BBOX);
             return true;
         }
