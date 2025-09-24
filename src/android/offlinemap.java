@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import javax.imageio.ImageIO;
-
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Log;
 import org.apache.cordova.CallbackContext;
 
 import org.json.JSONArray;
@@ -87,29 +89,31 @@ public class offlinemap extends CordovaPlugin {
     }
 
     private static void downloadTile(String wmsUrl, int zoom, int x, int y) {
-        File outputFile = new File(String.format("tiles/%d/%d/%d.png", zoom, x, y));
-        outputFile.getParentFile().mkdirs();
-
+        File dir = new File(context.getExternalFilesDir(null), "tiles/" + zoom + "/" + x);
+        if (!dir.exists()) dir.mkdirs();
+        File outputFile = new File(dir, y + ".png");
+ 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(wmsUrl).openConnection();
             conn.setRequestMethod("GET");
             int responseCode = conn.getResponseCode();
-
+ 
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (InputStream in = conn.getInputStream()) {
-                    BufferedImage image = ImageIO.read(in);
-                    if (image != null) {
-                        ImageIO.write(image, "png", outputFile);
-                        System.out.println("Tile downloaded: " + outputFile.getAbsolutePath());
+                try (InputStream in = conn.getInputStream();
+                     FileOutputStream out = new FileOutputStream(outputFile)) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(in);
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        Log.i(TAG, "Tile downloaded: " + outputFile.getAbsolutePath());
                     } else {
-                        System.err.println("Failed to decode image for tile: " + outputFile.getPath());
+                        Log.e(TAG, "Failed to decode image for tile: " + outputFile.getPath());
                     }
                 }
             } else {
-                System.err.println("Failed to download tile (" + zoom + "/" + x + "/" + y + "). HTTP " + responseCode);
+                Log.e(TAG, "Failed to download tile (" + zoom + "/" + x + "/" + y + "). HTTP " + responseCode);
             }
-        } catch (IOException e) {
-            System.err.println("Error downloading tile (" + zoom + "/" + x + "/" + y + "): " + e.getMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Error downloading tile (" + zoom + "/" + x + "/" + y + "): " + e.getMessage());
         }
     }
 
