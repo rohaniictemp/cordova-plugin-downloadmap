@@ -75,7 +75,7 @@ public class offlinemap extends CordovaPlugin {
 
 
                             initializeDownload(rEQUEST_BBOX,callbackContext);
-                                                        callbackContext.success("Download task started in background");
+                            callbackContext.success("Download Completed");
                             // Notify JS success
                         } catch (Exception e) {
                             callbackContext.error("Error starting download: " + e.getMessage());
