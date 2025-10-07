@@ -127,7 +127,6 @@ public class offlinemap extends CordovaPlugin {
                 System.out.println(rEQUEST_BBOX.toString());
             }
             
-            final CallbackContext cb = callbackContext;
 
             cordova.getThreadPool().execute(new Runnable() {
                     @Override
@@ -135,7 +134,7 @@ public class offlinemap extends CordovaPlugin {
                         try {
 
 
-                            initializeDownload(rEQUEST_BBOX,cb);
+                            initializeDownload(rEQUEST_BBOX,callbackContext);
 
                             // Notify JS success
                         } catch (Exception e) {
