@@ -52,24 +52,24 @@ public class offlinemap extends CordovaPlugin {
             }
         }
       }
-         for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
-            int numTiles = 1 << zoom; // 2^zoom
-            for (int x = 0; x < numTiles; x++) {
-                for (int y = 0; y < numTiles; y++) {
-                    double[] bbox = getTileBBox(x, y, zoom);
-                    if (intersects(bbox, rEQUEST_BBOX)) {
-                        String wmsUrl = buildWmsUrl(bbox);
-                        downloadTile(wmsUrl, zoom, x, y);
-                    }
-                }
-            }
-        }
+        //  for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+        //     int numTiles = 1 << zoom; // 2^zoom
+        //     for (int x = 0; x < numTiles; x++) {
+        //         for (int y = 0; y < numTiles; y++) {
+        //             double[] bbox = getTileBBox(x, y, zoom);
+        //             if (intersects(bbox, rEQUEST_BBOX)) {
+        //                 String wmsUrl = buildWmsUrl(bbox);
+        //                 downloadTile(wmsUrl, zoom, x, y);
+        //             }
+        //         }
+        //     }
+        // }
          for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
         int numTiles = 1 << zoom;
         for (int x = 0; x < numTiles; x++) {
             for (int y = 0; y < numTiles; y++) {
                 double[] bbox = getTileBBox(x, y, zoom);
-                if (intersects(bbox, requestBBox)) {
+                if (intersects(bbox, rEQUEST_BBOX)) {
                     String wmsUrl = buildWmsUrl(bbox);
                     try {
                         downloadTile(wmsUrl, zoom, x, y);
@@ -126,13 +126,16 @@ public class offlinemap extends CordovaPlugin {
                 rEQUEST_BBOX[i] = bboxArray.getDouble(i);
                 System.out.println(rEQUEST_BBOX.toString());
             }
+            
+            final CallbackContext cb = callbackContext;
+
             cordova.getThreadPool().execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
 
 
-                            initializeDownload(rEQUEST_BBOX,callbackContext);
+                            initializeDownload(rEQUEST_BBOX,cb);
 
                             // Notify JS success
                         } catch (Exception e) {
