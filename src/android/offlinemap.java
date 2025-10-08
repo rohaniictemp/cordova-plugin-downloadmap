@@ -119,8 +119,6 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
         }
     }
 
-    Log.d("OfflineMapPlugin", "Total tiles: " + totalTiles);
-
     // Now download
     for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
         int numTiles = 1 << zoom;
@@ -133,21 +131,7 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
                         downloadTile(wmsUrl, zoom, x, y);
                         downloadedTiles++;
 
-                        int progress = (int) ((downloadedTiles / (float) totalTiles) * 100);
-
-                        // Log it for debugging
-                        Log.d("OfflineMapPlugin", "Progress " + progress + "%");
-
-                        // Send progress update
-                        PluginResult update = new PluginResult(
-                                PluginResult.Status.OK,
-                                "Progress: " + progress + "%"
-                        );
-                        update.setKeepCallback(true); // keep callback alive
-                        callbackContext.sendPluginResult(update);
-
                     } catch (Exception e) {
-                        Log.e("OfflineMapPlugin", "Tile download failed", e);
                         PluginResult err = new PluginResult(
                                 PluginResult.Status.ERROR,
                                 "Tile download failed: " + e.getMessage()
@@ -157,6 +141,18 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
                     }
                 }
             }
+
+            int progress = (int) ((downloadedTiles / (float) totalTiles) * 100);
+
+                        // Log it for debugging
+
+                        // Send progress update
+                        PluginResult update = new PluginResult(
+                                PluginResult.Status.OK,
+                                "Progress: " + progress + "%"
+                        );
+                        update.setKeepCallback(true); // keep callback alive
+                        callbackContext.sendPluginResult(update);
         }
     }
 }
