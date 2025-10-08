@@ -37,12 +37,78 @@ public class offlinemap extends CordovaPlugin {
     private static final int MAX_ZOOM = 9;
 
 
-    public void initializeDownload( double[] rEQUEST_BBOX,CallbackContext callbackContext)  {
+//     public void initializeDownload( double[] rEQUEST_BBOX,CallbackContext callbackContext)  {
         
-        int totalTiles = 0;
-        int downloadedTiles = 0;
-        for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
-        int numTiles = 1 << zoom; // 2^zoom
+//         int totalTiles = 0;
+//         int downloadedTiles = 0;
+//         for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+//         int numTiles = 1 << zoom; // 2^zoom
+//         for (int x = 0; x < numTiles; x++) {
+//             for (int y = 0; y < numTiles; y++) {
+//                 double[] bbox = getTileBBox(x, y, zoom);
+//                 if (intersects(bbox, rEQUEST_BBOX)) {
+//                     totalTiles++;
+//                 }
+//             }
+//         }
+//       }
+//         //  for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+//         //     int numTiles = 1 << zoom; // 2^zoom
+//         //     for (int x = 0; x < numTiles; x++) {
+//         //         for (int y = 0; y < numTiles; y++) {
+//         //             double[] bbox = getTileBBox(x, y, zoom);
+//         //             if (intersects(bbox, rEQUEST_BBOX)) {
+//         //                 String wmsUrl = buildWmsUrl(bbox);
+//         //                 downloadTile(wmsUrl, zoom, x, y);
+//         //             }
+//         //         }
+//         //     }
+//         // }
+//          for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+//         int numTiles = 1 << zoom;
+//         for (int x = 0; x < numTiles; x++) {
+//             for (int y = 0; y < numTiles; y++) {
+//                 double[] bbox = getTileBBox(x, y, zoom);
+//                 if (intersects(bbox, rEQUEST_BBOX)) {
+//                     String wmsUrl = buildWmsUrl(bbox);
+//                     try {
+//                         downloadTile(wmsUrl, zoom, x, y);
+//                         downloadedTiles++;
+
+//                         // Calculate % complete
+//                         int progress = (int) ((downloadedTiles / (float) totalTiles) * 100);
+
+//                         // Send progress update to JS
+//                         PluginResult update = new PluginResult(
+//                                 PluginResult.Status.OK,
+//                                 "Progress: " + progress + "%"
+//                         );
+//                         update.setKeepCallback(true);
+//                         callbackContext.sendPluginResult(update);
+
+//                     } catch (Exception e) {
+//                         PluginResult err = new PluginResult(
+//                                 PluginResult.Status.ERROR,
+//                                 "Tile download failed: " + e.getMessage()
+//                         );
+//                         err.setKeepCallback(true); // keep callback alive even if one tile fails
+//                         callbackContext.sendPluginResult(err);
+//                     }
+//                 }
+//             }
+//         }
+
+//     }
+
+// }
+
+public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackContext) {
+    int totalTiles = 0;
+    int downloadedTiles = 0;
+
+    // Count total
+    for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+        int numTiles = 1 << zoom;
         for (int x = 0; x < numTiles; x++) {
             for (int y = 0; y < numTiles; y++) {
                 double[] bbox = getTileBBox(x, y, zoom);
@@ -51,20 +117,10 @@ public class offlinemap extends CordovaPlugin {
                 }
             }
         }
-      }
-        //  for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
-        //     int numTiles = 1 << zoom; // 2^zoom
-        //     for (int x = 0; x < numTiles; x++) {
-        //         for (int y = 0; y < numTiles; y++) {
-        //             double[] bbox = getTileBBox(x, y, zoom);
-        //             if (intersects(bbox, rEQUEST_BBOX)) {
-        //                 String wmsUrl = buildWmsUrl(bbox);
-        //                 downloadTile(wmsUrl, zoom, x, y);
-        //             }
-        //         }
-        //     }
-        // }
-         for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+    }
+
+    // Download loop
+    for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
         int numTiles = 1 << zoom;
         for (int x = 0; x < numTiles; x++) {
             for (int y = 0; y < numTiles; y++) {
@@ -75,38 +131,29 @@ public class offlinemap extends CordovaPlugin {
                         downloadTile(wmsUrl, zoom, x, y);
                         downloadedTiles++;
 
-                        // Calculate % complete
                         int progress = (int) ((downloadedTiles / (float) totalTiles) * 100);
 
-                        // Send progress update to JS
                         PluginResult update = new PluginResult(
-                                PluginResult.Status.OK,
-                                "Progress: " + progress + "%"
+                            PluginResult.Status.OK,
+                            "Progress: " + progress + "%"
                         );
                         update.setKeepCallback(true);
                         callbackContext.sendPluginResult(update);
 
                     } catch (Exception e) {
                         PluginResult err = new PluginResult(
-                                PluginResult.Status.ERROR,
-                                "Tile download failed: " + e.getMessage()
+                            PluginResult.Status.ERROR,
+                            "Tile download failed: " + e.getMessage()
                         );
-                        err.setKeepCallback(true); // keep callback alive even if one tile fails
+                        err.setKeepCallback(true);
                         callbackContext.sendPluginResult(err);
                     }
                 }
             }
         }
-
     }
-
-            PluginResult done = new PluginResult(
-                    PluginResult.Status.OK,
-                    "Download Completed"
-            );
-            done.setKeepCallback(false); // closes callback
-            callbackContext.sendPluginResult(done);
 }
+
 
         
 
@@ -135,6 +182,12 @@ public class offlinemap extends CordovaPlugin {
 
 
                             initializeDownload(rEQUEST_BBOX,callbackContext);
+                            PluginResult done = new PluginResult(
+                                    PluginResult.Status.OK,
+                                    "Download Completed"
+                            );
+                            done.setKeepCallback(false);
+                            callbackContext.sendPluginResult(done);
 
                             // Notify JS success
                         } catch (Exception e) {
@@ -146,7 +199,7 @@ public class offlinemap extends CordovaPlugin {
 
 
                 });         
-       return true;
+             return true;
         }
         return false;
     }
