@@ -20,6 +20,8 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -116,8 +118,15 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
                     totalTiles++;
                 }
             }
+            
         }
-    }
+        PluginResult update = new PluginResult(
+                                PluginResult.Status.OK,
+                                "Progress: " + totalTiles
+                        );
+            update.setKeepCallback(true); // keep callback alive
+        callbackContext.sendPluginResult(update);
+}
 
     // Now download
     for (int zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
