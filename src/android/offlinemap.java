@@ -20,6 +20,7 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 
@@ -31,12 +32,13 @@ public class offlinemap extends CordovaPlugin {
     public offlinemap() {
     }
 
-    private static final String WMS_BASE_URL = "https://egisp.dfo-mpo.gc.ca/arcgis/rest/services/chs/ENC_MaritimeChartService/MapServer/exts/MaritimeChartService/WMSServer?";
-    private static final String LAYER_NAME = "6,4,3,2,1"; // Example layer names
-    private static final String CRS = "EPSG:3857";
-    private static final int TILE_SIZE = 256;
-    private static final int MIN_ZOOM = 0;
-    private static final int MAX_ZOOM = 9;
+    private static String WMS_BASE_URL = "";
+    private static String LAYER_NAME = "";
+    private static String CRS = "";
+    private static int TILE_SIZE ;
+    private static int MIN_ZOOM ;
+    private static int MAX_ZOOM ;
+
 
 
 //     public void initializeDownload( double[] rEQUEST_BBOX,CallbackContext callbackContext)  {
@@ -175,10 +177,16 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
     
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (action.equals("coolMethod")) {
-            String message = args.getString(0);
-            this.coolMethod(message, callbackContext);
-            return true;
+        if (action.equals("setConfig")) {
+            JSONObject config = args.getJSONObject(0);
+            WMS_BASE_URL = config.optString("baseUrl", WMS_BASE_URL);
+            LAYER_NAME   = config.optString("layerName", LAYER_NAME);
+            CRS          = config.optString("crs", CRS);
+            TILE_SIZE    = config.optInt("tileSize", TILE_SIZE);
+            MIN_ZOOM     = config.optInt("minZoom", MIN_ZOOM);
+            MAX_ZOOM     = config.optInt("maxZoom", MAX_ZOOM);
+            callbackContext.success("Configuration updated successfully");
+        return true;
         }else if(action.equals("initializeDownload")){
             JSONArray bboxArray = args.getJSONArray(0);
             double[] rEQUEST_BBOX = new double[bboxArray.length()];
