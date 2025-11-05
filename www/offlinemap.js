@@ -7,7 +7,7 @@ exports.coolMethod = function (arg0, success, error) {
 
 exports.initializeDownload = function (arg0, success, error) {
     exec(success, error, 'offlinemap', 'initializeDownload', [arg0]);
-}
+};
 
 exports.setConfig = function (config, success, error) {
     exec(success, error, 'offlinemap', 'setConfig', [config]);
