@@ -35,9 +35,9 @@ public class offlinemap extends CordovaPlugin {
     private static String WMS_BASE_URL = "";
     private static String LAYER_NAME = "";
     private static String CRS = "";
-    private static int TILE_SIZE ;
-    private static int MIN_ZOOM ;
-    private static int MAX_ZOOM ;
+    private static int TILE_SIZE =0 ;
+    private static int MIN_ZOOM = 0 ;
+    private static int MAX_ZOOM = 0 ;
     private static String DOWNLOADPATH = "";
 
 
