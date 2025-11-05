@@ -38,6 +38,7 @@ public class offlinemap extends CordovaPlugin {
     private static int TILE_SIZE ;
     private static int MIN_ZOOM ;
     private static int MAX_ZOOM ;
+    private static String DOWNLOADPATH = "";
 
 
 
@@ -185,6 +186,7 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
             TILE_SIZE    = config.optInt("tileSize", TILE_SIZE);
             MIN_ZOOM     = config.optInt("minZoom", MIN_ZOOM);
             MAX_ZOOM     = config.optInt("maxZoom", MAX_ZOOM);
+            DOWNLOADPATH = config.optString("downloadPath", DOWNLOADPATH);
             callbackContext.success("Configuration updated successfully");
         return true;
         }else if(action.equals("initializeDownload")){
@@ -241,7 +243,7 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
     }
 
     private static void downloadTile(String wmsUrl, int zoom, int x, int y) {
-        File outputFile = new File(String.format("/sdcard/Android/data/com.iic.naavic/tiles/%d/%d/%d.png", zoom, x, y));
+        File outputFile = new File(String.format(DOWNLOADPATH + "/%d/%d/%d.png", zoom, x, y));
         outputFile.getParentFile().mkdirs();
 
  
