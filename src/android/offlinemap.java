@@ -107,6 +107,16 @@ public class offlinemap extends CordovaPlugin {
 
 // }
 
+public void setConfig(JSONObject config) {
+    WMS_BASE_URL = config.optString("baseUrl", WMS_BASE_URL);
+    LAYER_NAME   = config.optString("layerName", LAYER_NAME);
+    CRS          = config.optString("crs", CRS);
+    TILE_SIZE    = config.optInt("tileSize", TILE_SIZE);
+    MIN_ZOOM     = config.optInt("minZoom", MIN_ZOOM);
+    MAX_ZOOM     = config.optInt("maxZoom", MAX_ZOOM);
+    DOWNLOADPATH = config.optString("downloadPath", DOWNLOADPATH);
+}
+
 public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackContext) {
     int totalTiles = 0;
     int downloadedTiles = 0;
@@ -180,13 +190,8 @@ public void initializeDownload(double[] rEQUEST_BBOX, CallbackContext callbackCo
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("setConfig")) {
             JSONObject config = args.getJSONObject(0);
-            WMS_BASE_URL = config.optString("baseUrl", WMS_BASE_URL);
-            LAYER_NAME   = config.optString("layerName", LAYER_NAME);
-            CRS          = config.optString("crs", CRS);
-            TILE_SIZE    = config.optInt("tileSize", TILE_SIZE);
-            MIN_ZOOM     = config.optInt("minZoom", MIN_ZOOM);
-            MAX_ZOOM     = config.optInt("maxZoom", MAX_ZOOM);
-            DOWNLOADPATH = config.optString("downloadPath", DOWNLOADPATH);
+            
+            setConfig(config);
             callbackContext.success("Configuration updated successfully");
         return true;
         }else if(action.equals("initializeDownload")){
